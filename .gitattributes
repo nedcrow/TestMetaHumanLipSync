@@ -1,2 +1,4 @@
 *.uasset filter=lfs diff=lfs merge=lfs -text lockable
 *.tga filter=lfs diff=lfs merge=lfs -text lockable
+Reallusions/** filter=lfs diff=lfs merge=lfs -text
+Content/Reallusions/** filter=lfs diff=lfs merge=lfs -text
