@@ -3,6 +3,9 @@
 
 #include "TTSActor.h"
 #include "Sound/SoundBase.h"
+#include "AudioDecompress.h"
+#include "AudioDevice.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ATTSActor::ATTSActor(const class FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
@@ -31,44 +34,33 @@ void ATTSActor::Tick(float DeltaTime)
 void ATTSActor::CallTTS()
 {
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
-
-	Request->OnProcessRequestComplete().BindUObject(this, &ATTSActor::OnResponseReceived);
-	////This is the url on which to process the request
-	//Request->SetURL("https://api.maum.ai/tts/stream");
-	//Request->SetVerb("POST");
-	////Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
-	//Request->SetHeader("Content-Type", TEXT("application/json"));
-	//DialogStr = TEXT("'나랏말쌈이 듕귁에 달아 이롭지 아니할씨, 세종대왕 만세'");
-	//FString content = TEXT("{");
-	//content.Append(TEXT("apiId : 'neocomix',"));
-	//content.Append(TEXT("apiKey : '328239e0cac840929309d5de7faa09d0',"));
-	//content.Append(TEXT("text : ")).Append(DialogStr).Append(TEXT(","));
-	//content.Append(TEXT("voiceName : 'neocomix_lye'"));
-	//content.Append(TEXT("}"));
-	//UE_LOG(LogTemp, Warning, TEXT("testText: %s"), *content);
-	//Request->SetContentAsString(content);
-	//Request->ProcessRequest();
-
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 
-	JsonObject->SetStringField("title", "Test");
-	JsonObject->SetStringField("body", "I am testing!");
-	JsonObject->SetStringField("userId", "1");
-
-	Request->SetURL("https://jsonplaceholder.typicode.com/posts");
+	// mindslab
+	Request->OnProcessRequestComplete().BindUObject(this, &ATTSActor::OnResponseReceived);
+	Request->SetURL("https://api.maum.ai/tts/stream");
 	Request->SetVerb("POST");
 	Request->SetHeader("Content-Type", TEXT("application/json"));
-	FString content = TEXT("{");
-	content.Append(TEXT("title: 'Test'"));
-	content.Append(TEXT("body: 'I am testing!'"));
-	content.Append(TEXT("userId: '1'"));
-	content.Append(TEXT("}"));
-	//Request->SetContentAsString(content);
+
+	JsonObject->SetStringField("apiId", "neocomix");
+	JsonObject->SetStringField("apiKey", "328239e0cac840929309d5de7faa09d0");
+	JsonObject->SetStringField("text", L"나랏말쌈이 듕귁에 달아 이롭지 아니할씨, 세종대왕 만세");
+	JsonObject->SetStringField("voiceName", "neocomix_lye");
+
+	// test rest
+	/*Request->SetURL("https://jsonplaceholder.typicode.com/posts");
+	Request->SetVerb("POST");
+	Request->SetHeader("Content-Type", TEXT("application/json"));
+
+	JsonObject->SetStringField("title", "Test");
+	JsonObject->SetStringField("body", L"안녕 I am testing!");
+	JsonObject->SetStringField("userId", "1");*/
 
 	FString outputString;
 	TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&outputString);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 	Request->SetContentAsString(outputString);
+	
 	Request->ProcessRequest();
 }
 
@@ -76,23 +68,57 @@ void ATTSActor::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Res
 {
 	UE_LOG(LogTemp, Warning, TEXT("HTTP bWasSuccessful : %s"), bWasSuccessful ? TEXT("Success") : TEXT("Fail"));
 
-	//Create a pointer to hold the json serialized data
-	TSharedPtr<FJsonObject> JsonObject;
+	USoundWave* sw = NewObject<USoundWave>(USoundWave::StaticClass());
+	if (!sw) return;
+	TArray < uint8 > rawFile;
+	FWaveModInfo WaveInfo;
 
-	//Create a reader pointer to read the json data
-	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+	SerializeWaveFile(rawFile, Response->GetContent().GetData(), Response->GetContent().Num(), 1, 44100);
 
-	//Deserialize the json data given Reader and the actual object to deserialize
-	if (FJsonSerializer::Deserialize(Reader, JsonObject))
-	{
-		//Get the value of the json object by field name
-		//int32 recievedInt = JsonObject->GetIntegerField("customInt");
+	UE_LOG(LogTemp, Warning, TEXT("rawFile Num: %d"), rawFile.Num());
+	if (WaveInfo.ReadWaveInfo(rawFile.GetData(), rawFile.Num())) {
 
-		//Output it to the engine
-		//GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green, FString::FromInt(recievedInt));
+		sw->InvalidateCompressedData();
 
-		UE_LOG(LogTemp, Warning, TEXT("HTTP Response result : %s"), *Response->GetContentAsString());
+		sw->RawData.Lock(LOCK_READ_WRITE);
+		void* LockedData = sw->RawData.Realloc(rawFile.Num());
+		FMemory::Memcpy(LockedData, rawFile.GetData(), rawFile.Num());
+		sw->RawData.Unlock();
+
+		int32 DurationDiv = *WaveInfo.pChannels * *WaveInfo.pBitsPerSample * *WaveInfo.pSamplesPerSec;
+		if (DurationDiv)
+		{
+			sw->Duration = *WaveInfo.pWaveDataSize * 8.0f / DurationDiv;
+		}
+		else
+		{
+			sw->Duration = 0.0f;
+		}
+		sw->SetSampleRate(*WaveInfo.pSamplesPerSec);
+		sw->NumChannels = *WaveInfo.pChannels;
+		sw->RawPCMDataSize = WaveInfo.SampleDataSize;
+		sw->SoundGroup = ESoundGroup::SOUNDGROUP_Default;
+
+		UGameplayStatics::PlaySound2D(this, sw);		
 	}
+	
+	//auto content = Response->GetContent().GetData();
+	//FString contentStr = Response->GetContentAsString();
+	//auto headers = Response->GetAllHeaders();
+	//auto contentType = Response->GetContentType();
+	//auto contentLength = Response->GetContentLength();
+	////USoundWave* SW;
+	////Create a pointer to hold the json serialized data
+	//TSharedPtr<FJsonObject> JsonObject;
+
+	////Create a reader pointer to read the json data
+	//TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+
+	////Deserialize the json data given Reader and the actual object to deserialize
+	//if (FJsonSerializer::Deserialize(Reader, JsonObject))
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("HTTP Response result : %s"), *Response->GetContentAsString());
+	//}
 
 }
 
