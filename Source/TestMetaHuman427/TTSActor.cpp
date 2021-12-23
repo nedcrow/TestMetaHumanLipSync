@@ -67,17 +67,34 @@ void ATTSActor::CallTTS()
 void ATTSActor::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HTTP bWasSuccessful : %s"), bWasSuccessful ? TEXT("Success") : TEXT("Fail"));
-
-	USoundWave* sw = NewObject<USoundWave>(USoundWave::StaticClass());
-	if (!sw) return;
+	
 	TArray < uint8 > rawFile;
-	FWaveModInfo WaveInfo;
-
 	SerializeWaveFile(rawFile, Response->GetContent().GetData(), Response->GetContent().Num(), 1, 44100);
 
+	FWaveModInfo WaveInfo;
 	UE_LOG(LogTemp, Warning, TEXT("rawFile Num: %d"), rawFile.Num());
 	if (WaveInfo.ReadWaveInfo(rawFile.GetData(), rawFile.Num())) {
+		USoundWave* sw = NewObject<USoundWave>(USoundWave::StaticClass());
+		if (!sw) {
+			UE_LOG(LogTemp, Warning, TEXT("Null Sound Wave"));
+			return;
+		}
+		
+		UE_LOG(LogTemp, Warning, TEXT("SoundWave Name: %s"), *sw->GetFName().ToString());
 
+		int32 DurationDiv = *WaveInfo.pChannels * *WaveInfo.pBitsPerSample * *WaveInfo.pSamplesPerSec;
+		if (DurationDiv <= 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Null Too small than DurationDiv"));			
+		}
+		
+		sw->Duration = *WaveInfo.pWaveDataSize * 8.0f / DurationDiv;
+		sw->SetSampleRate(*WaveInfo.pSamplesPerSec/2.0f);
+		sw->NumChannels = *WaveInfo.pChannels;
+		sw->RawPCMDataSize = WaveInfo.SampleDataSize;
+		sw->RawPCMData = (uint8*)FMemory::Malloc(sw->RawPCMDataSize);
+		FMemory::Memmove(sw->RawPCMData, rawFile.GetData(), rawFile.Num());
+		sw->SoundGroup = ESoundGroup::SOUNDGROUP_Default;
 		sw->InvalidateCompressedData();
 
 		sw->RawData.Lock(LOCK_READ_WRITE);
@@ -85,21 +102,7 @@ void ATTSActor::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Res
 		FMemory::Memcpy(LockedData, rawFile.GetData(), rawFile.Num());
 		sw->RawData.Unlock();
 
-		int32 DurationDiv = *WaveInfo.pChannels * *WaveInfo.pBitsPerSample * *WaveInfo.pSamplesPerSec;
-		if (DurationDiv)
-		{
-			sw->Duration = *WaveInfo.pWaveDataSize * 8.0f / DurationDiv;
-		}
-		else
-		{
-			sw->Duration = 0.0f;
-		}
-		sw->SetSampleRate(*WaveInfo.pSamplesPerSec);
-		sw->NumChannels = *WaveInfo.pChannels;
-		sw->RawPCMDataSize = WaveInfo.SampleDataSize;
-		sw->SoundGroup = ESoundGroup::SOUNDGROUP_Default;
-
-		UGameplayStatics::PlaySound2D(this, sw);		
+		UGameplayStatics::PlaySound2D(this, sw);
 	}
 	
 	//auto content = Response->GetContent().GetData();

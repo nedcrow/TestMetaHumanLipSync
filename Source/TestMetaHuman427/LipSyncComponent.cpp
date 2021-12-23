@@ -2,12 +2,12 @@
 
 
 #include "LipSyncComponent.h"
-//#include "../../Plugins/OVRLipSync/Source/OVRLipSyncEditor/Public/OVRLipSyncEditorModule.cpp"
 #include "Engine.h"
 #include "AudioDecompress.h"
 #include "AudioDevice.h"
 #include "OVRLipSyncContextWrapper.h"
 #include "OVRLipSyncFrame.h"
+
 // Sets default values for this component's properties
 ULipSyncComponent::ULipSyncComponent()
 {
@@ -95,7 +95,7 @@ bool ULipSyncComponent::OVRLipSyncProcessSoundWaveBase(USoundBase* TargetSoundBa
 	USoundWave* SoundWave = Cast<USoundWave>(TargetSoundBase);
 	if(SoundWave) DecompressSoundWave(SoundWave);
 
-
+	OVRLipSyncProcessSoundWave(SoundWave);
 	return true;
 }
 
@@ -107,7 +107,7 @@ bool ULipSyncComponent::OVRLipSyncProcessSoundWave(USoundWave * TargetSoundWave,
 
 	auto SequenceName = FString::Printf(TEXT("%s_LipSyncSequence"), *TargetSoundWave->GetFName().ToString());
 	auto SequencePath = FString::Printf(TEXT("/Game/Audio/TempSound_LipSyncSequence"));
-	auto SequencePackage = CreatePackage(NULL, *SequencePath);
+	auto SequencePackage = CreatePackage(*SequencePath);
 	auto Sequence = NewObject<UOVRLipSyncFrameSequence>(SequencePackage, *SequenceName, RF_Public | RF_Standalone);
 	auto NumChannels = TargetSoundWave->NumChannels;
 	auto SampleRate = TargetSoundWave->GetSampleRateForCurrentPlatform();
