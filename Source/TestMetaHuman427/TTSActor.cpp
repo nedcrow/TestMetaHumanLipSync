@@ -94,6 +94,7 @@ void ATTSActor::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Res
 		sw->RawPCMDataSize = WaveInfo.SampleDataSize;
 		sw->RawPCMData = (uint8*)FMemory::Malloc(sw->RawPCMDataSize);
 		FMemory::Memmove(sw->RawPCMData, rawFile.GetData(), rawFile.Num());
+
 		sw->SoundGroup = ESoundGroup::SOUNDGROUP_Default;
 		sw->InvalidateCompressedData();
 
