@@ -27,7 +27,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool OVRLipSyncProcessSoundWaveAsset(const FAssetData& SoundWaveAsset, bool UseOfflineModel = false);
 	UFUNCTION(BlueprintCallable)
-	bool OVRLipSyncProcessSoundWaveBase(USoundBase* TargetSoundBase, bool UseOfflineModel = false);
+	bool OVRLipSyncProcessSoundBase(USoundBase* TargetSoundBase, bool UseOfflineModel = false);
+	UFUNCTION(BlueprintCallable)
 	bool OVRLipSyncProcessSoundWave(USoundWave* TargetSoundWave, bool UseOfflineModel = false);
 
 private:

@@ -30,14 +30,13 @@ void UTTSComponentWithMindsLab::CallTTS(FString TextForSound)
 
 	JsonObject->SetStringField("apiId", "neocomix");
 	JsonObject->SetStringField("apiKey", "328239e0cac840929309d5de7faa09d0");
-	JsonObject->SetStringField("text", L"나랏말쌈이 듕귁에 달아 이롭지 아니할씨, 세종대왕 만세");
+	JsonObject->SetStringField("text", TextForSound);
 	JsonObject->SetStringField("voiceName", "neocomix_lye");
 
 	FString outputString;
 	TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&outputString);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 	Request->SetContentAsString(outputString);
-
 	Request->ProcessRequest();
 }
 
@@ -62,8 +61,8 @@ void UTTSComponentWithMindsLab::OnResponseReceived(FHttpRequestPtr Request, FHtt
 			UE_LOG(LogTemp, Warning, TEXT("Null Too small than DurationDiv"));
 		}
 
-		sw->Duration = *WaveInfo.pWaveDataSize * 8.0f / DurationDiv;
-		sw->SetSampleRate(*WaveInfo.pSamplesPerSec / 2.0f); // 프로퍼티가 클 수록 소리가 느려짐.
+		sw->Duration = *WaveInfo.pWaveDataSize * 16.0f / DurationDiv;
+		sw->SetSampleRate(*WaveInfo.pSamplesPerSec/2); // 프로퍼티가 클 수록 소리가 느려짐.
 		sw->NumChannels = *WaveInfo.pChannels;
 		sw->RawPCMDataSize = WaveInfo.SampleDataSize;
 		sw->RawPCMData = (uint8*)FMemory::Malloc(sw->RawPCMDataSize);

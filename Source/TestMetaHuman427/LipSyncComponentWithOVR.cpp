@@ -30,13 +30,12 @@ bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundWaveAsset(const FAssetData&
 		UE_LOG(LogTemp, Error, TEXT("Can't process %s: only mono and stereo streams are supported"), *ObjectPath);
 		return false;
 	}
-	DecompressSoundWave(SoundWave);
 
 	OVRLipSyncProcessSoundWave(SoundWave);
 	return true;
 }
 
-bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundWaveBase(USoundBase* TargetSoundBase, bool UseOfflineModel)
+bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundBase(USoundBase* TargetSoundBase, bool UseOfflineModel)
 {
 	if (!TargetSoundBase)
 	{
@@ -45,7 +44,10 @@ bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundWaveBase(USoundBase* Target
 	}
 
 	USoundWave* SoundWave = Cast<USoundWave>(TargetSoundBase);
-	if (SoundWave) DecompressSoundWave(SoundWave);
+	if (!SoundWave) {
+		UE_LOG(LogTemp, Error, TEXT("Casting fail or Null property(TargetSoundWave)"));
+		return false;
+	}
 
 	OVRLipSyncProcessSoundWave(SoundWave);
 	return true;
@@ -53,6 +55,8 @@ bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundWaveBase(USoundBase* Target
 
 bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundWave(USoundWave* TargetSoundWave, bool UseOfflineModel)
 {
+	DecompressSoundWave(TargetSoundWave);
+
 	// Compute LipSync sequence frames at 100 times a second rate
 	constexpr auto LipSyncSequenceUpateFrequency = 100;
 	constexpr auto LipSyncSequenceDuration = 1.0f / LipSyncSequenceUpateFrequency;
