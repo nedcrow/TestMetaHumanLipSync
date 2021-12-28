@@ -17,13 +17,18 @@ public:
 	// Sets default values for this component's properties
 	ULipSyncComponentWithOVR();
 
+/* Properties */
 public:	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		USoundBase* SoundBase;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (Tooltip = "Use when functions(OVRLipSyncProcess) has null sound property."))
+	USoundBase* DefaultSoundBase;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (Tooltip = "LipSync Sequence to be played"))
-		UOVRLipSyncFrameSequence* LipSyncSequence;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Meta = (Tooltip = "LipSync Sequence to be played"))
+	UOVRLipSyncFrameSequence* LipSyncSequence;
 
+/*
+* OVRLipSyncProcess
+* Reference : OVRLipSyncEditorModule
+*/
 	UFUNCTION(BlueprintCallable)
 	bool OVRLipSyncProcessSoundWaveAsset(const FAssetData& SoundWaveAsset, bool UseOfflineModel = false);
 	UFUNCTION(BlueprintCallable)
@@ -32,5 +37,6 @@ public:
 	bool OVRLipSyncProcessSoundWave(USoundWave* TargetSoundWave, bool UseOfflineModel = false);
 
 private:
+	USoundWave* LastSoundWave;
 	bool DecompressSoundWave(USoundWave* SoundWave);
 };

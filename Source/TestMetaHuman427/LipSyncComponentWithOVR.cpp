@@ -20,14 +20,25 @@ bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundWaveAsset(const FAssetData&
 {
 	auto ObjectPath = SoundWaveAsset.ObjectPath.ToString();
 	auto SoundWave = FindObject<USoundWave>(NULL, *ObjectPath);
+	bool isFail = false;
+
 	if (!SoundWave)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Can't find %s"), *ObjectPath);
-		return false;
+		isFail = true;
 	}
+
 	if (SoundWave->NumChannels > 2)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Can't process %s: only mono and stereo streams are supported"), *ObjectPath);
+		isFail = true;
+	}
+
+	if (isFail) {
+		if (DefaultSoundBase) {
+			OVRLipSyncProcessSoundBase(DefaultSoundBase);
+			return true;
+		}
 		return false;
 	}
 
@@ -40,21 +51,36 @@ bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundBase(USoundBase* TargetSoun
 	if (!TargetSoundBase)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Null property 'USoundBase'."));
+		
+		if (DefaultSoundBase) {
+			OVRLipSyncProcessSoundBase(DefaultSoundBase);
+			return true;
+		}
 		return false;
 	}
 
 	USoundWave* SoundWave = Cast<USoundWave>(TargetSoundBase);
-	if (!SoundWave) {
-		UE_LOG(LogTemp, Error, TEXT("Casting fail or Null property(TargetSoundWave)"));
-		return false;
-	}
-
 	OVRLipSyncProcessSoundWave(SoundWave);
 	return true;
 }
 
 bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundWave(USoundWave* TargetSoundWave, bool UseOfflineModel)
 {
+	if (!TargetSoundWave) {
+		UE_LOG(LogTemp, Error, TEXT("Null property 'USoundWave'."));
+
+		if (!DefaultSoundBase) {
+			UE_LOG(LogTemp, Error, TEXT("Null property 'DefaultSoundBase'."));
+			return false;
+		}
+
+		OVRLipSyncProcessSoundBase(DefaultSoundBase);
+		return true;
+	}
+
+	if (LastSoundWave == TargetSoundWave) return true;
+	LastSoundWave = TargetSoundWave;
+
 	DecompressSoundWave(TargetSoundWave);
 
 	// Compute LipSync sequence frames at 100 times a second rate
@@ -125,7 +151,7 @@ bool ULipSyncComponentWithOVR::OVRLipSyncProcessSoundWave(USoundWave* TargetSoun
 			Sequence->Add(Visemes, LaughterScore);
 		}
 	}
-
+	
 	LipSyncSequence = Sequence;
 
 	Sequence->MarkPackageDirty();

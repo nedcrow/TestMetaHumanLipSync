@@ -19,10 +19,18 @@ UTTSComponentWithMindsLab::UTTSComponentWithMindsLab()
 
 void UTTSComponentWithMindsLab::CallTTS(FString TextForSound)
 {
+	if (SucceedSoundSetting && LastTextForSound == TextForSound) {
+		if (bIsAutoPlay) UGameplayStatics::PlaySound2D(this, LastSoundWave);
+		if (TTSEvent.IsBound())	TTSEvent.Broadcast(LastSoundWave);
+		return;
+	}
+
+	SucceedSoundSetting = false;
+
+	// neocomix & mindslab
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 
-	// mindslab
 	Request->OnProcessRequestComplete().BindUObject(this, &UTTSComponentWithMindsLab::OnResponseReceived);
 	Request->SetURL("https://api.maum.ai/tts/stream");
 	Request->SetVerb("POST");
@@ -38,6 +46,8 @@ void UTTSComponentWithMindsLab::CallTTS(FString TextForSound)
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 	Request->SetContentAsString(outputString);
 	Request->ProcessRequest();
+
+	LastTextForSound = TextForSound;
 }
 
 void UTTSComponentWithMindsLab::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
@@ -49,7 +59,6 @@ void UTTSComponentWithMindsLab::OnResponseReceived(FHttpRequestPtr Request, FHtt
 	if (WaveInfo.ReadWaveInfo(rawFile.GetData(), rawFile.Num())) {
 
 		USoundWave* sw = NewObject<USoundWave>(USoundWave::StaticClass());
-
 		if (!sw) {
 			UE_LOG(LogTemp, Warning, TEXT("Null Sound Wave"));
 			return;
@@ -59,6 +68,7 @@ void UTTSComponentWithMindsLab::OnResponseReceived(FHttpRequestPtr Request, FHtt
 		if (DurationDiv <= 0)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Null Too small than DurationDiv"));
+			return;
 		}
 
 		sw->Duration = *WaveInfo.pWaveDataSize * 16.0f / DurationDiv;
@@ -74,6 +84,9 @@ void UTTSComponentWithMindsLab::OnResponseReceived(FHttpRequestPtr Request, FHtt
 		void* LockedData = sw->RawData.Realloc(rawFile.Num());
 		FMemory::Memcpy(LockedData, rawFile.GetData(), rawFile.Num());
 		sw->RawData.Unlock();
+
+		LastSoundWave = sw;
+		SucceedSoundSetting = true;
 
 		if (bIsAutoPlay) UGameplayStatics::PlaySound2D(this, sw);
 
