@@ -3,7 +3,7 @@
 
 #include "LipSyncModelBase.h"
 #include "Components/AudioComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/SceneComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "LipSyncComponentWithOVR.h"
@@ -18,8 +18,7 @@ ALipSyncModelBase::ALipSyncModelBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Capsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule"));
-	RootComponent = Capsule;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	Body = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Body"));
 	Body->SetupAttachment(RootComponent);
@@ -30,7 +29,7 @@ ALipSyncModelBase::ALipSyncModelBase()
 	SceneCapture2D->SetupAttachment(RootComponent);
 
 	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
-	Audio->SetupAttachment(RootComponent);
+	Audio->SetupAttachment(Body);
 
 	OVRLipSyncPlaybackActor = CreateDefaultSubobject<UOVRLipSyncPlaybackActorComponent>(TEXT("OVRLipSyncPlaybackActor"));
 	OVRLipSyncPlaybackActor->OnVisemesReady.AddDynamic(this, &ALipSyncModelBase::CallDeleFunc_VisemesReady);

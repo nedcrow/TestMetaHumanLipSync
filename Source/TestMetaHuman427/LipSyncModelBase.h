@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-//#include "OVRLipSyncPlaybackActor.h"
-#include "GameFramework/Actor.h"
 #include "LipSyncModelBase.generated.h"
 
 UCLASS()
@@ -16,9 +14,6 @@ class TESTMETAHUMAN427_API ALipSyncModelBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ALipSyncModelBase();
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	class UCapsuleComponent* Capsule;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class USkeletalMeshComponent* Body;

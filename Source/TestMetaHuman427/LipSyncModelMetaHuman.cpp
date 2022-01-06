@@ -1,25 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "LipSyncModelReallusion.h"
+#include "LipSyncModelMetaHuman.h"
 
-ALipSyncModelReallusion::ALipSyncModelReallusion() {
+ALipSyncModelMetaHuman::ALipSyncModelMetaHuman() {
 	//PrimaryActorTick.
 	bTriggerd = false;
 }
 
-void ALipSyncModelReallusion::BeginPlay() {
+void ALipSyncModelMetaHuman::BeginPlay() {
 	Super::BeginPlay();
 }
 
-void ALipSyncModelReallusion::Tick(float DeltaTime) {
+void ALipSyncModelMetaHuman::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	SetCursorLocations();
 }
 
 // Áß¾Ó ±âÁØ : Y= 0, Z= 180
-void ALipSyncModelReallusion::SetCursorLocations()
+void ALipSyncModelMetaHuman::SetCursorLocations()
 {
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (PC) {
@@ -38,7 +38,7 @@ void ALipSyncModelReallusion::SetCursorLocations()
 		float minY = -50;
 		float maxY = 50;
 		float minZ = 120;
-		float maxZ = 200;
+		float maxZ = 180;
 		CursorLocationEyes = ClampVector(CursorLocationHead, FVector(150.0f, minY, minZ), FVector(150.0f, maxY, maxZ));
 
 		// test
@@ -46,9 +46,4 @@ void ALipSyncModelReallusion::SetCursorLocations()
 		FVector outDirection;
 		PC->DeprojectMousePositionToWorld(OutLocationHead, outDirection);
 	}
-}
-
-bool ALipSyncModelReallusion::GetTriggerd()
-{
-	return bTriggerd;
 }
