@@ -26,6 +26,8 @@ void UTTSComponentWithMindsLab::CallTTS(FString TextForSound)
 	}
 
 	SucceedSoundSetting = false;
+	LastTextForSound = TextForSound;
+	TextForSound += FString(L".");
 
 	// neocomix & mindslab
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
@@ -46,34 +48,33 @@ void UTTSComponentWithMindsLab::CallTTS(FString TextForSound)
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 	Request->SetContentAsString(outputString);
 	Request->ProcessRequest();
-
-	LastTextForSound = TextForSound;
 }
 
 void UTTSComponentWithMindsLab::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
-	TArray < uint8 > rawFile;
-	SerializeWaveFile(rawFile, Response->GetContent().GetData(), Response->GetContent().Num(), 1, 44100);
+	TArray < uint8 > rawFile = Response->GetContent();
+	//SerializeWaveFile(rawFile, Response->GetContent().GetData(), Response->GetContent().Num(), 1, 44100);
 
 	FWaveModInfo WaveInfo;
 	if (WaveInfo.ReadWaveInfo(rawFile.GetData(), rawFile.Num())) {
 
-		USoundWave* sw = NewObject<USoundWave>(USoundWave::StaticClass());
+		USoundWave* sw = NewObject<USoundWave>();
+
 		if (!sw) {
 			UE_LOG(LogTemp, Warning, TEXT("Null Sound Wave"));
 			return;
 		}
 
-		int32 DurationDiv = *WaveInfo.pChannels * *WaveInfo.pBitsPerSample * *WaveInfo.pSamplesPerSec;
+		int32 DurationDiv = *WaveInfo.pChannels * (*WaveInfo.pBitsPerSample / 8.f) * *WaveInfo.pSamplesPerSec;
 		if (DurationDiv <= 0)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Null Too small than DurationDiv"));
 			return;
 		}
 
-		sw->Duration = *WaveInfo.pWaveDataSize * 16.0f / DurationDiv;
-		sw->SetSampleRate(*WaveInfo.pSamplesPerSec/2); // 프로퍼티가 클 수록 소리가 느려짐.
-		sw->NumChannels = 1;// *WaveInfo.pChannels;
+		sw->Duration = WaveInfo.SampleDataSize / DurationDiv;
+		sw->SetSampleRate(*WaveInfo.pSamplesPerSec); // 프로퍼티가 클 수록 소리가 빨라짐.
+		sw->NumChannels = *WaveInfo.pChannels;
 		sw->RawPCMDataSize = WaveInfo.SampleDataSize;
 		sw->RawPCMData = (uint8*)FMemory::Malloc(sw->RawPCMDataSize);
 		FMemory::Memmove(sw->RawPCMData, rawFile.GetData(), rawFile.Num());
