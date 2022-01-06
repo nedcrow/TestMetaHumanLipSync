@@ -1,0 +1,17 @@
+﻿빌드 시작...
+1>------ 빌드 생략: 프로젝트: UE4, 구성: BuiltWithUnrealBuildTool Win32 ------
+1>이 솔루션 구성에 대해 빌드하도록 선택된 프로젝트가 없습니다. 
+2>------ 빌드 시작: 프로젝트: TestMetaHuman427, 구성: DebugGame_Editor x64 ------
+2>Using 'git status' to determine working set for adaptive non-unity build (C:\Users\HARIM\Documents\GitHub\TestMetaHumanLipSync).
+2>Building TestMetaHuman427Editor...
+2>Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+2>Building 4 actions with 8 processes...
+2>  [1/4] LipSyncModelReallusion.cpp
+2>  [2/4] UE4Editor-TestMetaHuman427-Win64-DebugGame.lib
+2>     C:\Users\HARIM\Documents\GitHub\TestMetaHumanLipSync\Intermediate\Build\Win64\UE4Editor\DebugGame\TestMetaHuman427\UE4Editor-TestMetaHuman427-Win64-DebugGame.lib 라이브러리 및 C:\Users\HARIM\Documents\GitHub\TestMetaHumanLipSync\Intermediate\Build\Win64\UE4Editor\DebugGame\TestMetaHuman427\UE4Editor-TestMetaHuman427-Win64-DebugGame.exp 개체를 생성하고 있습니다.
+2>  [3/4] UE4Editor-TestMetaHuman427-Win64-DebugGame.dll
+2>     C:\Users\HARIM\Documents\GitHub\TestMetaHumanLipSync\Intermediate\Build\Win64\UE4Editor\DebugGame\TestMetaHuman427\UE4Editor-TestMetaHuman427-Win64-DebugGame.suppressed.lib 라이브러리 및 C:\Users\HARIM\Documents\GitHub\TestMetaHumanLipSync\Intermediate\Build\Win64\UE4Editor\DebugGame\TestMetaHuman427\UE4Editor-TestMetaHuman427-Win64-DebugGame.suppressed.exp 개체를 생성하고 있습니다.
+2>  [4/4] TestMetaHuman427Editor-Win64-DebugGame.target
+2>Total time in Parallel executor: 1.33 seconds
+2>Total execution time: 1.86 seconds
+========== 빌드: 성공 1, 실패 0, 최신 0, 생략 1 ==========

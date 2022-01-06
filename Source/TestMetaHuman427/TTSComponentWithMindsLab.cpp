@@ -73,7 +73,7 @@ void UTTSComponentWithMindsLab::OnResponseReceived(FHttpRequestPtr Request, FHtt
 
 		sw->Duration = *WaveInfo.pWaveDataSize * 16.0f / DurationDiv;
 		sw->SetSampleRate(*WaveInfo.pSamplesPerSec/2); // 프로퍼티가 클 수록 소리가 느려짐.
-		sw->NumChannels = *WaveInfo.pChannels;
+		sw->NumChannels = 1;// *WaveInfo.pChannels;
 		sw->RawPCMDataSize = WaveInfo.SampleDataSize;
 		sw->RawPCMData = (uint8*)FMemory::Malloc(sw->RawPCMDataSize);
 		FMemory::Memmove(sw->RawPCMData, rawFile.GetData(), rawFile.Num());
