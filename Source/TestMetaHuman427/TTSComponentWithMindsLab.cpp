@@ -27,7 +27,7 @@ void UTTSComponentWithMindsLab::CallTTS(FString TextForSound)
 
 	SucceedSoundSetting = false;
 	LastTextForSound = TextForSound;
-	TextForSound += FString(L".");
+	TextForSound += TEXT(".");
 
 	// neocomix & mindslab
 	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
