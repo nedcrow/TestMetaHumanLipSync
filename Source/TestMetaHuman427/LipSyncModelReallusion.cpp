@@ -2,6 +2,7 @@
 
 
 #include "LipSyncModelReallusion.h"
+#include "Camera/CameraActor.h"
 
 ALipSyncModelReallusion::ALipSyncModelReallusion() {
 	//PrimaryActorTick.
@@ -15,7 +16,8 @@ void ALipSyncModelReallusion::BeginPlay() {
 void ALipSyncModelReallusion::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	SetCursorLocations();
+	if (bUseLookAtCursor == true) SetCursorLocations();
+	if (bUseLookAtCamera == true) SetCameraLocation();
 }
 
 // Áß¾Ó ±âÁØ : Y= 0, Z= 180
@@ -48,7 +50,11 @@ void ALipSyncModelReallusion::SetCursorLocations()
 	}
 }
 
-bool ALipSyncModelReallusion::GetTriggerd()
+void ALipSyncModelReallusion::SetCameraLocation()
 {
-	return bTriggerd;
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC) {
+		TargetCameraLocation = PC->PlayerCameraManager->GetCameraLocation();
+		TargetCameraLocation = ClampVector(TargetCameraLocation, CameraLocation_Min, CameraLocation_Max);
+	}
 }

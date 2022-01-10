@@ -22,9 +22,27 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
+// LookAtCamera
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | LookAt")
+	uint8 bUseLookAtCamera : 1;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | LookAt")
+	FVector TargetCameraLocation = FVector(-150.0f, .0f, 150.0f);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | LookAt")
+	FVector CameraLocation_Min = FVector(-150.0f, -70.0f, 120.0f);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | LookAt")
+	FVector CameraLocation_Max = FVector(0.0f, 70.0f, 240.0f);
+
+	UFUNCTION(BlueprintCallable)
+	void SetCameraLocation();
 
 // LookAtCursor
 public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | LookAt")
+	uint8 bUseLookAtCursor: 1;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | LookAt")
 	uint8 bTriggerd:1;
 
@@ -42,7 +60,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetCursorLocations();
-
-	UFUNCTION(BlueprintCallable)
-	bool GetTriggerd();
 };
