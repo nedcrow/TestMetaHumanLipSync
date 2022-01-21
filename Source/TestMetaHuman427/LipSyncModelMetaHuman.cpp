@@ -35,11 +35,11 @@ void ALipSyncModelMetaHuman::SetCursorLocations()
 		);
 
 		// Eyes
-		float minY = -50;
-		float maxY = 50;
-		float minZ = 120;
-		float maxZ = 180;
-		CursorLocationEyes = ClampVector(CursorLocationHead, FVector(150.0f, minY, minZ), FVector(150.0f, maxY, maxZ));
+		float minY = -50.f;
+		float maxY = 50.f;
+		float minZ = 120.f;
+		float maxZ = 180.f;
+		CursorLocationEyes = ClampVector(CursorLocationEyes, FVector(150.0f, minY, minZ), FVector(150.0f, maxY, maxZ));
 
 		// test
 		FVector outLocation;

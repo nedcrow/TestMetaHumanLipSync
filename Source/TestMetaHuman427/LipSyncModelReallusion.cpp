@@ -41,7 +41,7 @@ void ALipSyncModelReallusion::SetCursorLocations()
 		float maxY = 50;
 		float minZ = 120;
 		float maxZ = 200;
-		CursorLocationEyes = ClampVector(CursorLocationHead, FVector(150.0f, minY, minZ), FVector(150.0f, maxY, maxZ));
+		CursorLocationEyes = ClampVector(CursorLocationEyes, FVector(150.0f, minY, minZ), FVector(150.0f, maxY, maxZ));
 
 		// test
 		FVector outLocation;

@@ -66,6 +66,11 @@ public:
 
 
 /* SelectCharacter */
+	UFUNCTION(BlueprintCallable)
+	void RecordScreen();
+
+
+/* SelectCharacter */
 private:
 	AController* HitController;
 	TArray<FHitResult> HitsOfTraceCursor();

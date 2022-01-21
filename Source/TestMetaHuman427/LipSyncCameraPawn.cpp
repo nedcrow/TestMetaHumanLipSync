@@ -147,6 +147,11 @@ void ALipSyncCameraPawn::ZoomOut()
 	}
 }
 
+void ALipSyncCameraPawn::RecordScreen()
+{
+	//android
+}
+
 TArray<FHitResult> ALipSyncCameraPawn::HitsOfTraceCursor()
 {
 	TArray<FHitResult> OutHits;
