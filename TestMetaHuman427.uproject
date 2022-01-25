@@ -47,6 +47,10 @@
 		{
 			"Name": "RLPlugin",
 			"Enabled": true
+		},
+		{
+			"Name": "MovieRenderPipeline",
+			"Enabled": true
 		}
 	]
 }

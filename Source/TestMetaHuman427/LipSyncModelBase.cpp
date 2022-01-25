@@ -18,18 +18,18 @@ ALipSyncModelBase::ALipSyncModelBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	Body = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Body"));
-	Body->SetupAttachment(RootComponent);
+	Body->SetupAttachment(Root);
 
 	SceneCapture2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCapture2D"));
 	SceneCapture2D->SetRelativeLocation(FVector(11.4f, -25.0f, 170.0f));
 	SceneCapture2D->SetRelativeRotation(FRotator(.0f, 120.0f, .0f));
-	SceneCapture2D->SetupAttachment(RootComponent);
+	SceneCapture2D->SetupAttachment(Root);
 
 	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
-	Audio->SetupAttachment(Body);
+	Audio->SetupAttachment(Root);
 
 	OVRLipSyncPlaybackActor = CreateDefaultSubobject<UOVRLipSyncPlaybackActorComponent>(TEXT("OVRLipSyncPlaybackActor"));
 	OVRLipSyncPlaybackActor->OnVisemesReady.AddDynamic(this, &ALipSyncModelBase::CallDeleFunc_VisemesReady);

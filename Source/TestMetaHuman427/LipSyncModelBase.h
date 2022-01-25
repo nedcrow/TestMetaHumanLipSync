@@ -16,6 +16,9 @@ public:
 	ALipSyncModelBase();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class USceneComponent* Root;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class USkeletalMeshComponent* Body;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
