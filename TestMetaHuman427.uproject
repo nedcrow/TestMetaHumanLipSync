@@ -10,7 +10,9 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"CoreUObject",
-				"Engine"
+				"Engine",
+				"UMG",
+				"HairStrandsCore"
 			]
 		}
 	],
@@ -50,6 +52,10 @@
 		},
 		{
 			"Name": "MovieRenderPipeline",
+			"Enabled": true
+		},
+		{
+			"Name": "AlembicHairImporter",
 			"Enabled": true
 		}
 	]
