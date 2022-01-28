@@ -4,7 +4,64 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Engine/DataTable.h"
 #include "DataStruct.generated.h"
+
+USTRUCT(BlueprintType)
+struct FCharacterIconStruct : public FTableRowBase {
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int ItemIndex;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString Name;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TAssetPtr<class USkeletalMesh> Face;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<class UObject> Hair_Groom;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<class UObject> Hair_Binding;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<class UObject> Eyebrows_Groom;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<class UObject> Eyebrows_Binding;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<class UObject> Eyelashes_Groom;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<class UObject> Eyelashes_Binding;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TAssetPtr<class USkeletalMesh> Torso;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TAssetPtr<class USkeletalMesh> Legs;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TAssetPtr<class USkeletalMesh> Feet;
+};
+
+USTRUCT(BlueprintType)
+struct FAnimationIconStruct : public FTableRowBase {
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int ItemIndex;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString Name;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TAssetPtr<class UAnimationAsset>> Animations;
+};
+
 
 /**
  * 
