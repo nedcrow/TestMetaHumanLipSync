@@ -1,6 +1,8 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CharacterButtonWidgetBase.h"
+#include "AnimationListWidgetBase.h"
+#include "LipSyncMasterWidgetBase.h"
 #include "../LipSyncModelMetaHuman.h"
 
 #include "Components/Border.h"
@@ -30,7 +32,6 @@ void UCharacterButtonWidgetBase::OnClickedCharacterButton()
 	}
 
 	/* 캐릭터 외형 정보 획득 */
-	FString tempName = TargetCharacterRowData->Name;
 	USkeletalMesh* face = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Face);
 	USkeletalMesh* torso = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Torso);
 	USkeletalMesh* legs = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Legs);
@@ -43,8 +44,13 @@ void UCharacterButtonWidgetBase::OnClickedCharacterButton()
 	UGroomBindingAsset* lashes_bind = Cast<UGroomBindingAsset>(loader.LoadSynchronous<UObject>(TargetCharacterRowData->Eyelashes_Binding));
 
 	/* 캐릭터 외형 변경 */
-	TargetText->SetText(FText().FromString(*tempName));
 	ALipSyncModelMetaHuman* model = Cast<ALipSyncModelMetaHuman>(UGameplayStatics::GetActorOfClass(GetWorld(), ALipSyncModelMetaHuman::StaticClass()));
+
+	if (!model) {
+		UE_LOG(LogTemp, Warning, TEXT("Null model"));
+		return;
+	}
+
 	model->Face->SetSkeletalMesh(face);
 	model->Torso->SetSkeletalMesh(torso);
 	model->Legs->SetSkeletalMesh(legs);
@@ -55,4 +61,6 @@ void UCharacterButtonWidgetBase::OnClickedCharacterButton()
 	model->Hair->SetBindingAsset(hair_bind);
 	model->Eyebrows->SetBindingAsset(brows_bind);
 	model->Eyelashes->SetBindingAsset(lashes_bind);
+
+	if(TargetLipSyncMasterWidget) TargetLipSyncMasterWidget->AnimationList->InitAnimationButtons(TargetCharacterRowData->ItemIndex);
 }

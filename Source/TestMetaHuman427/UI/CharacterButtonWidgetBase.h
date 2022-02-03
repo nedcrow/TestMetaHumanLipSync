@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "LipSyncMasterWidgetBase.h"
 #include "../DataStruct.h"
 #include "CharacterButtonWidgetBase.generated.h"
 
@@ -30,6 +31,9 @@ public:
 
 /* Change */
 public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	ULipSyncMasterWidgetBase* TargetLipSyncMasterWidget;
+
 	FCharacterIconStruct* TargetCharacterRowData;
 
 	UFUNCTION()

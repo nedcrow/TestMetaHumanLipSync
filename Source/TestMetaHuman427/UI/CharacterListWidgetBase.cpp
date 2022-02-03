@@ -4,37 +4,37 @@
 #include "CharacterListWidgetBase.h"
 #include "../DataStruct.h"
 
+#include "Components/ScrollBox.h"
 #include "Kismet/GameplayStatics.h"
 
 void UCharacterListWidgetBase::NativeConstruct()
 {
-	CharacterButtonWidget_A = Cast<UCharacterButtonWidgetBase>(UUserWidget::GetWidgetFromName(TEXT("CharacterButtonWidget_A")));
-	CharacterButtons.Add(CharacterButtonWidget_A);
+	ButtonList = Cast<UScrollBox>(UUserWidget::GetWidgetFromName(TEXT("ButtonList")));
 
-	CharacterButtonWidget_B = Cast<UCharacterButtonWidgetBase>(UUserWidget::GetWidgetFromName(TEXT("CharacterButtonWidget_B")));
-	CharacterButtons.Add(CharacterButtonWidget_B);
+	InitButtonList();
+}
 
-	CharacterButtonWidget_C = Cast<UCharacterButtonWidgetBase>(UUserWidget::GetWidgetFromName(TEXT("CharacterButtonWidget_C")));
-	CharacterButtons.Add(CharacterButtonWidget_C);
-
-	CharacterButtonWidget_D = Cast<UCharacterButtonWidgetBase>(UUserWidget::GetWidgetFromName(TEXT("CharacterButtonWidget_D")));
-	CharacterButtons.Add(CharacterButtonWidget_D);
+void UCharacterListWidgetBase::InitButtonList()
+{
+	Super::InitButtonList();
 
 	InitCharacterButtons();
 }
 
 void UCharacterListWidgetBase::InitCharacterButtons() {
-	if(!CharacterDataTable->IsValidLowLevel()) {
-		UE_LOG(LogTemp,Warning,TEXT("Null CharacterDataTable"));
+	if (!TargetDataTable->IsValidLowLevel()) {
+		UE_LOG(LogTemp, Warning, TEXT("Null TargetDataTable"));
 		return;
 	}
 
-	int buttonsCount = CharacterButtons.Num();
-	int dataRowCount = CharacterDataTable->GetRowNames().Num();
-	int loopCount = buttonsCount > dataRowCount ? dataRowCount : buttonsCount;
+	if (ButtonList) {
+		for (int i = 0; i < ButtonList->GetChildrenCount(); i++) {
+			FName rowName = FName(*FString().FromInt(i));
+			UCharacterButtonWidgetBase*	characterButton = Cast<UCharacterButtonWidgetBase>(ButtonList->GetChildAt(i));
 
-	for (int i = 0; i < loopCount; i++) {
-		FName rowName = FName(*FString().FromInt(i));
-		CharacterButtons[i]->TargetCharacterRowData = CharacterDataTable->FindRow<FCharacterIconStruct>(rowName, TEXT(""));
-	}	
+			characterButton->TargetCharacterRowData = TargetDataTable->FindRow<FCharacterIconStruct>(rowName, TEXT(""));
+
+			characterButton->TargetLipSyncMasterWidget = TargetLipSyncMasterWidget;
+		}
+	}
 }
