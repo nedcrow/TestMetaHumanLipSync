@@ -29,7 +29,7 @@ public:
 public:
 	virtual void NativeConstruct() override;
 
-/* Change */
+/* Change function */
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ULipSyncMasterWidgetBase* TargetLipSyncMasterWidget;

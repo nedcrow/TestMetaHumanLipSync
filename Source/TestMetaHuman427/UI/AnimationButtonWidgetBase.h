@@ -26,7 +26,7 @@ public:
 public:
 	virtual void NativeConstruct() override;
 
-/* Change */
+/* Change functiion*/
 public:
 	UAnimationAsset* TargetAnimation;
 	bool bIsLoopTargetAnim;

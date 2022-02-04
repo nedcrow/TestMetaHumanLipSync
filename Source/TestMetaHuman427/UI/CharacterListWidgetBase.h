@@ -18,12 +18,12 @@ class TESTMETAHUMAN427_API UCharacterListWidgetBase : public UButtonListWidgetBa
 public:
 	virtual void NativeConstruct()override;
 
-/* Init data table */
+/* Init data table to buttons */
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ULipSyncMasterWidgetBase* TargetLipSyncMasterWidget;
 
-	virtual void InitButtonList() override;
+	void InitButtonList(int ButtonCount) override;
 
 	void InitCharacterButtons();
 };

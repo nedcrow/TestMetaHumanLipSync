@@ -9,37 +9,24 @@
 void UButtonListWidgetBase::NativeConstruct()
 {
 	ButtonList = Cast<UScrollBox>(UUserWidget::GetWidgetFromName(TEXT("ButtonList")));
-	
-	InitButtonList();
 }
 
-void UButtonListWidgetBase::InitButtonList()
+void UButtonListWidgetBase::InitButtonList(int ButtonCount)
 {
-	if (!TargetDataTable->IsValidLowLevel()) {
-		UE_LOG(LogTemp, Warning, TEXT("Null DataTable"));
-		return;
-	}
-
-	if (!ButtonList) {
-		UE_LOG(LogTemp, Warning, TEXT("Null ButtonList"));
-		return;
-	}
-
 	if (!ButtonList) {
 		UE_LOG(LogTemp, Warning, TEXT("Null TargetButtonWidget"));
 		return;
 	}
 
-	int buttonsCount = ButtonList->GetChildrenCount();
-	int dataRowCount = TargetDataTable->GetRowNames().Num();
+	int childrenCount = ButtonList->GetChildrenCount();
 	
 	int loopCount;
-	if (buttonsCount < dataRowCount) {
-		loopCount = dataRowCount - buttonsCount;
+	if (childrenCount < ButtonCount) {
+		loopCount = ButtonCount - childrenCount;
 		for (int i = 0; i < loopCount; i++) ButtonList->AddChild(CreateWidget<UUserWidget>(this, TargetButtonWidget));
 	}
 	else {
-		loopCount = buttonsCount - dataRowCount;
+		loopCount = childrenCount - ButtonCount;
 		for (int i = 0; i < loopCount; i++) ButtonList->RemoveChildAt(0);
 	}
 }

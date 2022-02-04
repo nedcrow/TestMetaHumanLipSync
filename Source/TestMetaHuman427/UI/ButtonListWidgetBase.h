@@ -21,7 +21,7 @@ public:
 public:
 	virtual void NativeConstruct()override;
 
-/* Init data table */
+/* Init data table to buttons */
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data")
 	class UDataTable* TargetDataTable;
@@ -29,5 +29,5 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data")
 	TSubclassOf<UUserWidget> TargetButtonWidget;
 
-	virtual void InitButtonList();;
+	virtual void InitButtonList(int ButtonCount);;
 };

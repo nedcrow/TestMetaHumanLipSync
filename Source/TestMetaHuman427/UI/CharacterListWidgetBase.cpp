@@ -2,6 +2,7 @@
 
 
 #include "CharacterListWidgetBase.h"
+#include "CharacterButtonWidgetBase.h"
 #include "../DataStruct.h"
 
 #include "Components/ScrollBox.h"
@@ -11,21 +12,22 @@ void UCharacterListWidgetBase::NativeConstruct()
 {
 	ButtonList = Cast<UScrollBox>(UUserWidget::GetWidgetFromName(TEXT("ButtonList")));
 
-	InitButtonList();
+	if (!TargetDataTable->IsValidLowLevel()) {
+		UE_LOG(LogTemp, Warning, TEXT("Null DataTable"));
+		return;
+	}
+
+	InitButtonList(TargetDataTable->GetRowNames().Num());
 }
 
-void UCharacterListWidgetBase::InitButtonList()
+void UCharacterListWidgetBase::InitButtonList(int ButtonCount)
 {
-	Super::InitButtonList();
+	Super::InitButtonList(ButtonCount);
 
 	InitCharacterButtons();
 }
 
 void UCharacterListWidgetBase::InitCharacterButtons() {
-	if (!TargetDataTable->IsValidLowLevel()) {
-		UE_LOG(LogTemp, Warning, TEXT("Null TargetDataTable"));
-		return;
-	}
 
 	if (ButtonList) {
 		for (int i = 0; i < ButtonList->GetChildrenCount(); i++) {
