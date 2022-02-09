@@ -2,6 +2,8 @@
 
 
 #include "LipSyncCameraPawn.h"
+#include "LipSyncModelBase.h"
+
 #include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
@@ -41,9 +43,8 @@ void ALipSyncCameraPawn::BeginPlay()
 void ALipSyncCameraPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	if (bCanRotateAround) RotateAroundCamera();
-	//SetActorLocation(MCM->CurrentModel->GetActorLocation() + FVector(0.f, 0.f, 78.f));
-	//SpringArm->TargetArmLength = 60;
 }
 
 // Called to bind functionality to input
@@ -65,24 +66,18 @@ void ALipSyncCameraPawn::LeftClick_Pressed()
 void ALipSyncCameraPawn::LeftClick_Released()
 {
 	EndCameraRotating();
-	TArray<FHitResult> hits = HitsOfTraceCursor();
-	if (hits.Num() > 0) {
-		for (auto hit : hits) {
-			if (hit.GetActor() && hit.GetActor()->Tags.IndexOfByKey(TEXT("Model")) >= 0) {
-				//AModelCharacter* model = Cast<AModelCharacter>(hit.GetActor());
-				//AModelCharacterManager* MCM = Cast<AModelCharacterManager>(UGameplayStatics::GetActorOfClass(GetWorld(), AModelCharacterManager::StaticClass()));
-				//TArray<AActor*> displayPoints;
-				//FVector DisplayPointLocation;
-				//UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AActor::StaticClass(), FName("DisplayPoint"), displayPoints);
-				//DisplayPointLocation = displayPoints.Num() > 0 ? displayPoints[0]->GetActorLocation() : model->StartPointLocation;
+}
 
-				///* Target Speed */
-				//model->SetWalkSpeed(model->MaxSpeed);
-
-				break;
-			}
-		}
-
+void ALipSyncCameraPawn::LockZLocation(float TargetZ)
+{
+	if(!bUseZLocationLocking) return;
+	ALipSyncModelBase* model = Cast<ALipSyncModelBase>(UGameplayStatics::GetActorOfClass(GetWorld(), ALipSyncModelBase::StaticClass()));
+	if (model->Body) {
+		SetActorRelativeLocation(FVector(
+			GetActorLocation().X,
+			GetActorLocation().Y,
+			TargetZ
+		));
 	}
 }
 

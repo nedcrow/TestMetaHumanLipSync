@@ -34,14 +34,17 @@ void UAnimationListWidgetBase::InitAnimationButtons(int TargetRowIndex)
 		/* 필요한 버튼 준비 */
 		InitButtonList(rowData->Animations.Num());
 
-		/* 각 버튼마다 animation 할당 */
+		/* 각 버튼마다 animation, 이름 할당 */
 		FStreamableManager loader;
 		for (int i = 0; i < ButtonList->GetChildrenCount(); i++) {
 			UAnimationButtonWidgetBase* AnimButtonWidget = Cast<UAnimationButtonWidgetBase>(ButtonList->GetChildAt(i));
 			UAnimationAsset* anim = loader.LoadSynchronous<UAnimationAsset>(rowData->Animations[i]);
+
 			if (!(anim && AnimButtonWidget)) return;
 			AnimButtonWidget->TargetAnimation = anim;
 			AnimButtonWidget->bIsLoopTargetAnim = i == 0 ? true : false;
+
+			AnimButtonWidget->ApplyButtonText(rowData->AnimNames[i]);
 		}
 	}
 }

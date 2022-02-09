@@ -6,6 +6,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/SphereComponent.h"
 #include "LipSyncComponentWithOVR.h"
 #include "OVRLipSyncFrame.h"
 #include "OVRLipSyncPlaybackActorComponent.h"
@@ -22,6 +23,9 @@ ALipSyncModelBase::ALipSyncModelBase()
 
 	Body = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Body"));
 	Body->SetupAttachment(Root);
+
+	CameraTarget = CreateDefaultSubobject<USphereComponent>(TEXT("CameraTarget"));
+	CameraTarget->SetupAttachment(Body, TEXT("CameraSocket"));
 
 	SceneCapture2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCapture2D"));
 	SceneCapture2D->SetRelativeLocation(FVector(11.4f, -25.0f, 170.0f));

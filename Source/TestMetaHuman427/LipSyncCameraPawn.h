@@ -41,6 +41,13 @@ public:
 	void LeftClick_Pressed();
 	void LeftClick_Released();
 
+/* Lock Z Location */
+public:
+UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | Lock")
+	uint8 bUseZLocationLocking : 1;
+
+UFUNCTION(BlueprintCallable)
+	void LockZLocation(float TargetZ);
 
 /* RotateAround */
 public:

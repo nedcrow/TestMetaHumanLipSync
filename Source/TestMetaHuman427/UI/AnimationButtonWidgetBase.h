@@ -23,14 +23,23 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Widget")
 	class UTextBlock* TargetText;
 
+	FTimerHandle CameraTimer;
+
+/* Init basic */
 public:
 	virtual void NativeConstruct() override;
 
-/* Change functiion*/
+	UFUNCTION()
+	void ApplyButtonText(FString Text);
+
+/* Change functiions*/
 public:
 	UAnimationAsset* TargetAnimation;
 	bool bIsLoopTargetAnim;
 
 	UFUNCTION()
 	void OnClickedAnimationButton();
+
+	UFUNCTION()
+	void LockCameraZ();
 };

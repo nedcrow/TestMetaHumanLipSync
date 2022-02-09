@@ -18,6 +18,9 @@ public:
 	FString Name;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TAssetPtr<class USkeletalMesh> Body;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TAssetPtr<class USkeletalMesh> Face;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -42,6 +45,9 @@ public:
 	TAssetPtr<class USkeletalMesh> Torso;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TAssetPtr<class UMaterialInstance> TorsoMaterial;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TAssetPtr<class USkeletalMesh> Legs;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -60,6 +66,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TAssetPtr<class UAnimationAsset>> Animations;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FString> AnimNames;
 };
 
 

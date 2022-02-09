@@ -3,6 +3,7 @@
 
 #include "AnimationButtonWidgetBase.h"
 #include "../LipSyncModelMetaHuman.h"
+#include "../LipSyncCameraPawn.h"
 
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -17,20 +18,31 @@ void UAnimationButtonWidgetBase::NativeConstruct()
 	TargetText = Cast<UTextBlock>(UUserWidget::GetWidgetFromName(TEXT("TargetText")));
 }
 
+void UAnimationButtonWidgetBase::ApplyButtonText(FString Text)
+{
+	if (TargetText) TargetText->SetText(FText::FromString(Text));
+}
+
 void UAnimationButtonWidgetBase::OnClickedAnimationButton()
 {
-	FStreamableManager loader;
-	if (!TargetAnimation) {
-		UE_LOG(LogTemp, Warning, TEXT("Null Animation"));
-		return;
-	}
+	ALipSyncModelMetaHuman* model = Cast<ALipSyncModelMetaHuman>(UGameplayStatics::GetActorOfClass(GetWorld(), ALipSyncModelMetaHuman::StaticClass()));
+	if (!model || !TargetAnimation) return;
 
 	/* 캐릭터 애니메이션 변경 */
-	ALipSyncModelMetaHuman* model = Cast<ALipSyncModelMetaHuman>(UGameplayStatics::GetActorOfClass(GetWorld(), ALipSyncModelMetaHuman::StaticClass()));
-	if (!model) {
-		UE_LOG(LogTemp, Warning, TEXT("Null Model"));
-		return;
-	}
-
+	model->CurrentAnimation = TargetText->Text.ToString();
 	model->Body->PlayAnimation(TargetAnimation, bIsLoopTargetAnim);
+
+	/* Camera Z 위치 보정 */
+	UWorld* world = GetWorld();
+	if (!world) return;
+	world->GetTimerManager().SetTimer(CameraTimer, this, &UAnimationButtonWidgetBase::LockCameraZ, 0.08f, false);
+}
+
+void UAnimationButtonWidgetBase::LockCameraZ() {
+	ALipSyncModelMetaHuman* model = Cast<ALipSyncModelMetaHuman>(UGameplayStatics::GetActorOfClass(GetWorld(), ALipSyncModelMetaHuman::StaticClass()));
+	ALipSyncCameraPawn* cameraPawn = Cast<ALipSyncCameraPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (!(model->Body && cameraPawn)) return;
+
+	FVector CameraSocketLocation = model->Body->GetSocketLocation(TEXT("CameraSocket"));
+	cameraPawn->LockZLocation(CameraSocketLocation.Z);
 }

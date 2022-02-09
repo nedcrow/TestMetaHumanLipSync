@@ -15,6 +15,7 @@ UCLASS()
 class TESTMETAHUMAN427_API UCharacterButtonWidgetBase : public UUserWidget
 {
 	GENERATED_BODY()
+
 /* Property */
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Widget")
@@ -26,8 +27,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Widget")
 	class UTextBlock* TargetText;
 
+/* Init basic */
 public:
 	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void ApplyButtonText(FString Text);
 
 /* Change function */
 public:

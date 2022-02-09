@@ -33,10 +33,13 @@ void UCharacterListWidgetBase::InitCharacterButtons() {
 		for (int i = 0; i < ButtonList->GetChildrenCount(); i++) {
 			FName rowName = FName(*FString().FromInt(i));
 			UCharacterButtonWidgetBase*	characterButton = Cast<UCharacterButtonWidgetBase>(ButtonList->GetChildAt(i));
+			FCharacterIconStruct* tempRow = TargetDataTable->FindRow<FCharacterIconStruct>(rowName, TEXT(""));
 
-			characterButton->TargetCharacterRowData = TargetDataTable->FindRow<FCharacterIconStruct>(rowName, TEXT(""));
+			characterButton->TargetCharacterRowData = tempRow;
 
 			characterButton->TargetLipSyncMasterWidget = TargetLipSyncMasterWidget;
+
+			characterButton->ApplyButtonText(tempRow->Name);
 		}
 	}
 }

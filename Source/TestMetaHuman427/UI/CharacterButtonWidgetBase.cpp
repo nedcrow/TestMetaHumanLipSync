@@ -23,6 +23,11 @@ void UCharacterButtonWidgetBase::NativeConstruct()
 	TargetText = Cast<UTextBlock>(UUserWidget::GetWidgetFromName(TEXT("TargetText")));
 }
 
+void UCharacterButtonWidgetBase::ApplyButtonText(FString Text)
+{
+	if (TargetText) TargetText->SetText(FText::FromString(Text));
+}
+
 void UCharacterButtonWidgetBase::OnClickedCharacterButton()
 {
 	FStreamableManager loader;
@@ -34,6 +39,7 @@ void UCharacterButtonWidgetBase::OnClickedCharacterButton()
 	/* 캐릭터 외형 정보 획득 */
 	USkeletalMesh* face = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Face);
 	USkeletalMesh* torso = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Torso);
+	UMaterialInstance* torsoMaterial = loader.LoadSynchronous<UMaterialInstance>(TargetCharacterRowData->TorsoMaterial);
 	USkeletalMesh* legs = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Legs);
 	USkeletalMesh* feet = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Feet);
 	UGroomAsset* hair = Cast<UGroomAsset>(loader.LoadSynchronous<UObject>(TargetCharacterRowData->Hair_Groom));
@@ -53,6 +59,7 @@ void UCharacterButtonWidgetBase::OnClickedCharacterButton()
 
 	model->Face->SetSkeletalMesh(face);
 	model->Torso->SetSkeletalMesh(torso);
+	model->Torso->SetMaterial(0, torsoMaterial);
 	model->Legs->SetSkeletalMesh(legs);
 	model->Feet->SetSkeletalMesh(feet);
 	model->Hair->SetGroomAsset(hair);

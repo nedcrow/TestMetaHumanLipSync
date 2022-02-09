@@ -22,6 +22,9 @@ public:
 	class USkeletalMeshComponent* Body;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class USphereComponent* CameraTarget;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UOVRLipSyncPlaybackActorComponent* OVRLipSyncPlaybackActor;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -60,6 +63,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StartLipSyncFromText(FString TargetText);
+
+// Animation
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | Animation")
+	FString CurrentAnimation;
 
 // LookAtCamera
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | LookAt")
