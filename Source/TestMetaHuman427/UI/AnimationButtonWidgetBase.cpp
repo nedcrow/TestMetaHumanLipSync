@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "AnimationListWidgetBase.h"
 #include "AnimationButtonWidgetBase.h"
 #include "../LipSyncModelMetaHuman.h"
 #include "../LipSyncCameraPawn.h"
@@ -28,14 +29,25 @@ void UAnimationButtonWidgetBase::OnClickedAnimationButton()
 	ALipSyncModelMetaHuman* model = Cast<ALipSyncModelMetaHuman>(UGameplayStatics::GetActorOfClass(GetWorld(), ALipSyncModelMetaHuman::StaticClass()));
 	if (!model || !TargetAnimation) return;
 
-	/* 캐릭터 애니메이션 변경 */
-	model->CurrentAnimation = TargetText->Text.ToString();
-	//model->Body->PlayAnimation(TargetAnimation, bIsLoopTargetAnim);
-
-	/* Camera Z 위치 보정 */
 	UWorld* world = GetWorld();
 	if (!world) return;
-	world->GetTimerManager().SetTimer(CameraTimer, this, &UAnimationButtonWidgetBase::LockCameraZ, 0.08f, false);
+
+
+	/* 캐릭터 애니메이션 변경 */
+	FString tempStr = TargetText->Text.ToString();
+	if (model->CurrentAnimation == tempStr) {
+		if (tempStr == TEXT("SittingIdle")) { model->CurrentAnimation = TEXT("SittingTalking"); }
+		else if (tempStr == TEXT("Idle")) { model->CurrentAnimation = TEXT("Thinking"); }
+		else { model->CurrentAnimation = tempStr.Mid(0, 3) == TEXT("Sit") ? TEXT("SittingIdle") : TEXT("Idle"); }
+
+		world->GetTimerManager().SetTimer(AnimationButtonTimer, this, &UAnimationButtonWidgetBase::OnClickedAnimationButton, 0.01f, false);
+		return;
+	}
+	model->CurrentAnimation = TargetText->Text.ToString();
+	if (ParentList) ParentList->LastAnimButtonIndex = IndexOfList;
+
+	/* Camera Z 위치 보정 */
+	world->GetTimerManager().SetTimer(AnimationButtonTimer, this, &UAnimationButtonWidgetBase::LockCameraZ, 0.06f, false);
 }
 
 void UAnimationButtonWidgetBase::LockCameraZ() {

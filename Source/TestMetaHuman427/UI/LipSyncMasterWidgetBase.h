@@ -49,4 +49,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UnHideWidget();
+
+	UFUNCTION(BlueprintCallable)
+	void CallLastAnimation();
 };

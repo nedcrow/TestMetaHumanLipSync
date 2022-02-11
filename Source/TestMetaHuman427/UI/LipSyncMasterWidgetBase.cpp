@@ -3,6 +3,7 @@
 
 #include "LipSyncMasterWidgetBase.h"
 #include "CharacterListWidgetBase.h"
+#include "AnimationButtonWidgetBase.h"
 #include "AnimationListWidgetBase.h"
 #include "../LipSyncModelMetaHuman.h"
 #include "../LipSyncModelReallusion.h"
@@ -10,6 +11,7 @@
 #include "Components/AudioComponent.h"
 #include "Components/Button.h"
 #include "Components/CanvasPanel.h"
+#include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
 #include "Components/MultiLineEditableText.h"
 #include "Kismet/GameplayStatics.h"
@@ -73,4 +75,11 @@ void ULipSyncMasterWidgetBase::UnHideWidget()
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Failed the UnHideWidget"));
 	}
+}
+
+void ULipSyncMasterWidgetBase::CallLastAnimation()
+{
+	UAnimationButtonWidgetBase* button = Cast<UAnimationButtonWidgetBase>(AnimationList->ButtonList->GetChildAt(AnimationList->LastAnimButtonIndex));
+	if (button) button->OnClickedAnimationButton();
+	
 }

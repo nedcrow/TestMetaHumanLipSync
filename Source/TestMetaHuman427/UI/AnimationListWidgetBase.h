@@ -22,4 +22,6 @@ public:
 	void InitButtonList(int ButtonCount) override;
 
 	void InitAnimationButtons(int TargetRowIndex);
+
+	int LastAnimButtonIndex = 0;
 };

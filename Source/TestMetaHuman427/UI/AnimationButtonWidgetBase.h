@@ -23,11 +23,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Widget")
 	class UTextBlock* TargetText;
 
-	FTimerHandle CameraTimer;
-
 /* Init basic */
 public:
 	virtual void NativeConstruct() override;
+
+	FTimerHandle AnimationButtonTimer;
+
+	class UAnimationListWidgetBase* ParentList;
+
+	int IndexOfList = 0;
 
 	UFUNCTION()
 	void ApplyButtonText(FString Text);
