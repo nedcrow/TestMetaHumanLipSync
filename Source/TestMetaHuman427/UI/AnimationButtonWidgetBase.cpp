@@ -30,7 +30,7 @@ void UAnimationButtonWidgetBase::OnClickedAnimationButton()
 
 	/* 캐릭터 애니메이션 변경 */
 	model->CurrentAnimation = TargetText->Text.ToString();
-	model->Body->PlayAnimation(TargetAnimation, bIsLoopTargetAnim);
+	//model->Body->PlayAnimation(TargetAnimation, bIsLoopTargetAnim);
 
 	/* Camera Z 위치 보정 */
 	UWorld* world = GetWorld();
