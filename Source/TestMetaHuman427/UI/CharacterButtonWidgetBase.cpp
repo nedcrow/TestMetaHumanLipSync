@@ -37,7 +37,9 @@ void UCharacterButtonWidgetBase::OnClickedCharacterButton()
 	}
 
 	/* 캐릭터 외형 정보 획득 */
+	USkeletalMesh* body = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Body);
 	USkeletalMesh* face = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Face);
+	UMaterialInstance* faceMaterial = loader.LoadSynchronous<UMaterialInstance>(TargetCharacterRowData->FaceMaterial);
 	USkeletalMesh* torso = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Torso);
 	UMaterialInstance* torsoMaterial = loader.LoadSynchronous<UMaterialInstance>(TargetCharacterRowData->TorsoMaterial);
 	USkeletalMesh* legs = loader.LoadSynchronous<USkeletalMesh>(TargetCharacterRowData->Legs);
@@ -57,7 +59,9 @@ void UCharacterButtonWidgetBase::OnClickedCharacterButton()
 		return;
 	}
 
+	model->Body->SetSkeletalMesh(body);
 	model->Face->SetSkeletalMesh(face);
+	model->Face->SetMaterial(0, faceMaterial);
 	model->Torso->SetSkeletalMesh(torso);
 	model->Torso->SetMaterial(0, torsoMaterial);
 	model->Legs->SetSkeletalMesh(legs);

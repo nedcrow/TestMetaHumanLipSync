@@ -22,6 +22,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TAssetPtr<class USkeletalMesh> Face;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TAssetPtr<class UMaterialInstance> FaceMaterial;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSoftObjectPtr<class UObject> Hair_Groom;
