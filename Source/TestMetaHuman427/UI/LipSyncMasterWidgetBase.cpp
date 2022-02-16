@@ -36,10 +36,8 @@ void ULipSyncMasterWidgetBase::NativeConstruct() {
 	ALipSyncModelMetaHuman* model_metahuman = Cast<ALipSyncModelMetaHuman>(UGameplayStatics::GetActorOfClass(GetWorld(), ALipSyncModelMetaHuman::StaticClass()));
 	ALipSyncModelReallusion* model_reallusion = Cast<ALipSyncModelReallusion>(UGameplayStatics::GetActorOfClass(GetWorld(), ALipSyncModelReallusion::StaticClass()));
 
-	if (!(model_metahuman && model_reallusion)) return;
-
-	model_metahuman->Audio->OnAudioFinished.AddDynamic(this, &ULipSyncMasterWidgetBase::UnlockingWidge);
-	model_reallusion->Audio->OnAudioFinished.AddDynamic(this, &ULipSyncMasterWidgetBase::UnlockingWidge);
+	if (model_metahuman) model_metahuman->Audio->OnAudioFinished.AddDynamic(this, &ULipSyncMasterWidgetBase::UnlockingWidge);
+	if (model_reallusion) model_reallusion->Audio->OnAudioFinished.AddDynamic(this, &ULipSyncMasterWidgetBase::UnlockingWidge);
 }
 
 void ULipSyncMasterWidgetBase::UnlockingWidge() {
