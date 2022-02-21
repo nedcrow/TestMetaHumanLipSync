@@ -42,6 +42,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	bool isPlayed = false;
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 

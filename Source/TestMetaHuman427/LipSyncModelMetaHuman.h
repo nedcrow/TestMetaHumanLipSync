@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "LipSyncModelBase.h"
+#include "LipSync/LipSyncModelBase.h"
 #include "LipSyncModelMetaHuman.generated.h"
 
 /**

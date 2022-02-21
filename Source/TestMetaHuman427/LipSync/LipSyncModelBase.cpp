@@ -45,6 +45,7 @@ ALipSyncModelBase::ALipSyncModelBase()
 void ALipSyncModelBase::BeginPlay()
 {
 	Super::BeginPlay();
+	isPlayed = true;
 	CallDeleFunc_VisemesReady();
 	if (TTSWithMindsLab) TTSWithMindsLab->TTSEvent.AddDynamic(this, &ALipSyncModelBase::CallDeleFunc_TTSLipSync);
 }
@@ -53,8 +54,10 @@ void ALipSyncModelBase::BeginPlay()
 void ALipSyncModelBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (bUseLookAtCursor == true) SetCursorLocations();
-	if (bUseLookAtCamera == true) SetCameraLocation();
+	if (isPlayed) {
+		if (bUseLookAtCursor == true) SetCursorLocations();
+		if (bUseLookAtCamera == true) SetCameraLocation();
+	}
 }
 
 void ALipSyncModelBase::CallDeleFunc_VisemesReady()
@@ -123,10 +126,5 @@ void ALipSyncModelBase::SetCursorLocations()
 		float minZ = 120;
 		float maxZ = 200;
 		CursorLocationEyes = ClampVector(CursorLocationEyes, FVector(150.0f, minY, minZ), FVector(150.0f, maxY, maxZ));
-
-		// test
-		FVector outLocation;
-		FVector outDirection;
-		PC->DeprojectMousePositionToWorld(OutLocationHead, outDirection);
 	}
 }

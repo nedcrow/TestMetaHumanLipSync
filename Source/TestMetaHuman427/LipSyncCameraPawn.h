@@ -12,7 +12,6 @@ class TESTMETAHUMAN427_API ALipSyncCameraPawn : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
 	ALipSyncCameraPawn();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -28,9 +27,6 @@ public:
 	class UCameraComponent* Camera;
 
 
-protected:
-	virtual void BeginPlay() override;
-
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -41,6 +37,7 @@ public:
 	void LeftClick_Pressed();
 	void LeftClick_Released();
 
+
 /* Lock Z Location */
 public:
 UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | Lock")
@@ -48,6 +45,7 @@ UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Data | Lock")
 
 UFUNCTION(BlueprintCallable)
 	void LockZLocation(float TargetZ);
+
 
 /* RotateAround */
 public:
@@ -70,17 +68,6 @@ public:
 	float WheelSpeed = 10.0f;
 	void ZoomIn();
 	void ZoomOut();
-
-
-/* SelectCharacter */
-	UFUNCTION(BlueprintCallable)
-	void RecordScreen();
-
-
-/* SelectCharacter */
-private:
-	AController* HitController;
-	TArray<FHitResult> HitsOfTraceCursor();
 
 
 /* Common */

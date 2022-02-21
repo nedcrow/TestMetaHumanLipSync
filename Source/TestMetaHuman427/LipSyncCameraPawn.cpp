@@ -2,7 +2,7 @@
 
 
 #include "LipSyncCameraPawn.h"
-#include "LipSyncModelBase.h"
+#include "LipSync/LipSyncModelBase.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
@@ -28,15 +28,6 @@ ALipSyncCameraPawn::ALipSyncCameraPawn()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
-
-	//PawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("PawnMovement"));
-}
-
-// Called when the game starts or when spawned
-void ALipSyncCameraPawn::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -85,10 +76,6 @@ void ALipSyncCameraPawn::CallRotateAround()
 {
 	SetStartCursorTransform();
 	bCanRotateAround = true;
-
-	//if (FaceCamera) {
-	//	FaceCamera->
-	//}
 }
 
 void ALipSyncCameraPawn::RotateAroundCamera()
@@ -140,63 +127,6 @@ void ALipSyncCameraPawn::ZoomOut()
 	else {
 		SpringArm->TargetArmLength += WheelSpeed;
 	}
-}
-
-void ALipSyncCameraPawn::RecordScreen()
-{
-	//android
-}
-
-TArray<FHitResult> ALipSyncCameraPawn::HitsOfTraceCursor()
-{
-	TArray<FHitResult> OutHits;
-	APlayerController* PC = Cast<APlayerController>(GetController());
-	if (PC && PC->IsLocalController()) {
-		// tracing 준비
-		float MouseX;
-		float MouseY;
-		FVector CursorWorldPosition;
-		FVector CursorWorldDirection;
-
-		FVector CameraLocation;
-		FRotator CameraRotation;
-
-		PC->GetMousePosition(MouseX, MouseY);
-		PC->DeprojectScreenPositionToWorld(MouseX, MouseY, CursorWorldPosition, CursorWorldDirection);
-
-		PC->GetPlayerViewPoint(CameraLocation, CameraRotation);
-
-		FVector TraceStart = CameraLocation;
-		FVector TraceEnd = TraceStart + (CursorWorldDirection * 99999.f);
-
-		TArray<TEnumAsByte<EObjectTypeQuery>> Objects;
-		Objects.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
-		Objects.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
-		Objects.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody));
-		Objects.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel1));
-		Objects.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel2));
-
-		TArray<AActor*> ActorToIgnore;
-
-		// 장애물을 대비한 multi tracing
-		bool Result = UKismetSystemLibrary::LineTraceMultiForObjects(
-			GetWorld(),
-			TraceStart,
-			TraceEnd,
-			Objects,
-			true,
-			ActorToIgnore,
-			EDrawDebugTrace::None,
-			OutHits,
-			true,
-			FLinearColor::Red,
-			FLinearColor::Green,
-			100.0f
-		);
-		return OutHits;
-	}
-	return OutHits;
-	return TArray<FHitResult>();
 }
 
 void ALipSyncCameraPawn::SetStartCursorTransform()
